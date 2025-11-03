@@ -1,0 +1,31 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <sys:String x:Key="ThemeName">Light</sys:String>
+
+    <SolidColorBrush x:Key="JoyBlue" Color="#0AA7D1"/>
+    <SolidColorBrush x:Key="JoyRed"  Color="#FF3C28"/>
+    <SolidColorBrush x:Key="BrushPanel"  Color="#F7F8FA"/>
+    <SolidColorBrush x:Key="BrushCard"   Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="BrushStroke" Color="#E2E8F0"/>
+    <SolidColorBrush x:Key="BrushText"   Color="#1A1E27"/>
+    <SolidColorBrush x:Key="BrushSubtle" Color="#6B7280"/>
+    <SolidColorBrush x:Key="ScreenBackground" Color="#6B7280"/>
+
+    <DropShadowEffect x:Key="SoftShadow"
+                      BlurRadius="16"
+                      ShadowDepth="0"
+                      Color="#000000"
+                      Opacity="0.20"/>
+
+    <LinearGradientBrush x:Key="LeftTint" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#150AB9E6" Offset="0"/>
+        <GradientStop Color="#000AB9E6" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="RightTint" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#15FF3C28" Offset="0"/>
+        <GradientStop Color="#00FF3C28" Offset="1"/>
+    </LinearGradientBrush>
+</ResourceDictionary>

@@ -1,0 +1,892 @@
+﻿<Window x:Class="SwitchController.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Title="Switch Controller" Height="600" Width="1280" Background="transparent" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--测试用例-->
+                <!--<ResourceDictionary Source="Themes/Theme.ZA.xaml"/>-->
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="BaseButton" TargetType="Button">
+                <Setter Property="Foreground" Value="{DynamicResource BrushText}"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Padding" Value="12,8"/>
+                <Setter Property="Background" Value="{DynamicResource BrushCard}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BrushStroke}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid x:Name="root" RenderTransformOrigin="0.5,0.5">
+                                <Grid.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
+                                        <TranslateTransform x:Name="trans" Y="0"/>
+                                    </TransformGroup>
+                                </Grid.RenderTransform>
+
+                                <Border x:Name="bd"
+                      CornerRadius="12"
+                      Background="{TemplateBinding Background}"
+                      BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="{TemplateBinding BorderThickness}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <Border x:Name="overlay"
+                      CornerRadius="12"
+                      Background="Black"
+                      Opacity="0"
+                      IsHitTestVisible="False"/>
+                            </Grid>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleX"
+                                       To="1.02" Duration="0:0:0.08"/>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleY"
+                                       To="1.02" Duration="0:0:0.08"/>
+                                                <DoubleAnimation Storyboard.TargetName="overlay"
+                                       Storyboard.TargetProperty="Opacity"
+                                       To="0.06" Duration="0:0:0.08"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleX"
+                                       To="1" Duration="0:0:0.10"/>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleY"
+                                       To="1" Duration="0:0:0.10"/>
+                                                <DoubleAnimation Storyboard.TargetName="overlay"
+                                       Storyboard.TargetProperty="Opacity"
+                                       To="0" Duration="0:0:0.10"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleX"
+                                       To="0.96" Duration="0:0:0.06"/>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleY"
+                                       To="0.96" Duration="0:0:0.06"/>
+                                                <DoubleAnimation Storyboard.TargetName="trans"
+                                       Storyboard.TargetProperty="Y"
+                                       To="1.0" Duration="0:0:0.06"/>
+                                                <DoubleAnimation Storyboard.TargetName="overlay"
+                                       Storyboard.TargetProperty="Opacity"
+                                       To="0.12" Duration="0:0:0.06"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleX"
+                                       To="1.02" Duration="0:0:0.06"/>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleY"
+                                       To="1.02" Duration="0:0:0.06"/>
+                                                <DoubleAnimation Storyboard.TargetName="trans"
+                                       Storyboard.TargetProperty="Y"
+                                       To="0" Duration="0:0:0.06"/>
+                                                <DoubleAnimation Storyboard.TargetName="overlay"
+                                       Storyboard.TargetProperty="Opacity"
+                                       To="0.06" Duration="0:0:0.06"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="root" Property="Opacity" Value="0.45"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="IPTextBox" TargetType="TextBox">
+                <Setter Property="Foreground" Value="{DynamicResource BrushText}"/>
+                <Setter Property="Background" Value="{DynamicResource BrushCard}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BrushStroke}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="12,8"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TextBox">
+                            <Border x:Name="bd"
+                    CornerRadius="12"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}">
+                                <ScrollViewer x:Name="PART_ContentHost" Margin="0"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="bd" Property="Opacity" Value="0.45"/>
+                                </Trigger>
+                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                    <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource JoyBlue}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="PortTextBox" TargetType="TextBox">
+                <Setter Property="Foreground" Value="{DynamicResource BrushText}"/>
+                <Setter Property="Background" Value="{DynamicResource BrushCard}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BrushStroke}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="12,8"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TextBox">
+                            <Border x:Name="bd"
+                    CornerRadius="12"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}">
+                                <ScrollViewer x:Name="PART_ContentHost" Margin="0"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="bd" Property="Opacity" Value="0.45"/>
+                                </Trigger>
+                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                    <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource JoyRed}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="RoundButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+                <Setter Property="Width" Value="64"/>
+                <Setter Property="Height" Value="64"/>
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="Background" Value="{DynamicResource BrushCard}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid x:Name="root" RenderTransformOrigin="0.5,0.5">
+                                <Grid.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
+                                        <TranslateTransform x:Name="trans" Y="0"/>
+                                    </TransformGroup>
+                                </Grid.RenderTransform>
+
+                                <Ellipse x:Name="shape"
+                       Fill="{TemplateBinding Background}"
+                       Stroke="{TemplateBinding BorderBrush}"
+                       StrokeThickness="{TemplateBinding BorderThickness}"/>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                <Ellipse x:Name="overlay" Fill="Black" Opacity="0" IsHitTestVisible="False"/>
+                            </Grid>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleX"
+                                       To="1.02" Duration="0:0:0.08"/>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleY"
+                                       To="1.02" Duration="0:0:0.08"/>
+                                                <DoubleAnimation Storyboard.TargetName="overlay"
+                                       Storyboard.TargetProperty="Opacity"
+                                       To="0.06" Duration="0:0:0.08"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleX"
+                                       To="1" Duration="0:0:0.10"/>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleY"
+                                       To="1" Duration="0:0:0.10"/>
+                                                <DoubleAnimation Storyboard.TargetName="overlay"
+                                       Storyboard.TargetProperty="Opacity"
+                                       To="0" Duration="0:0:0.10"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleX"
+                                       To="0.96" Duration="0:0:0.06"/>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleY"
+                                       To="0.96" Duration="0:0:0.06"/>
+                                                <DoubleAnimation Storyboard.TargetName="trans"
+                                       Storyboard.TargetProperty="Y"
+                                       To="1.0" Duration="0:0:0.06"/>
+                                                <DoubleAnimation Storyboard.TargetName="overlay"
+                                       Storyboard.TargetProperty="Opacity"
+                                       To="0.12" Duration="0:0:0.06"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleX"
+                                       To="1.02" Duration="0:0:0.06"/>
+                                                <DoubleAnimation Storyboard.TargetName="scale"
+                                       Storyboard.TargetProperty="ScaleY"
+                                       To="1.02" Duration="0:0:0.06"/>
+                                                <DoubleAnimation Storyboard.TargetName="trans"
+                                       Storyboard.TargetProperty="Y"
+                                       To="0" Duration="0:0:0.06"/>
+                                                <DoubleAnimation Storyboard.TargetName="overlay"
+                                       Storyboard.TargetProperty="Opacity"
+                                       To="0.06" Duration="0:0:0.06"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="root" Property="Opacity" Value="0.45"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="ShoulderButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+                <Setter Property="Width" Value="120"/>
+                <Setter Property="Height" Value="40"/>
+            </Style>
+
+            <Style x:Key="AccentButtonBlue" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+                <Setter Property="BorderBrush" Value="{DynamicResource JoyBlue}"/>
+            </Style>
+            <Style x:Key="AccentButtonRed" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+                <Setter Property="BorderBrush" Value="{DynamicResource JoyRed}"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+
+    <Grid>
+        <Border CornerRadius="20" 
+                Background="Black" 
+                Opacity="0.25" 
+                IsHitTestVisible="False" 
+                Margin="4">
+            <Border.Effect>
+                <BlurEffect Radius="18"/>
+            </Border.Effect>
+        </Border>
+
+        <Border CornerRadius="20" 
+                Background="{DynamicResource BrushPanel}" 
+                SnapsToDevicePixels="True">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" 
+                        Background="{StaticResource BrushPanel}" 
+                        BorderBrush="{StaticResource BrushStroke}" 
+                        BorderThickness="0,0,0,1" 
+                        CornerRadius="20,20,0,0" 
+                        Effect="{StaticResource SoftShadow}"
+                        MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="3"/>
+                        </Grid.RowDefinitions>
+
+                        <DockPanel Grid.Row="0" LastChildFill="True" Margin="16,12">
+                            <TextBlock Text="Switch Controller" FontSize="22" FontWeight="Bold" Foreground="{StaticResource BrushText}"/>
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Margin="8,0,0,0">
+                                <Button x:Name="btnMinimize" Content="—" Width="36" Height="28" Style="{StaticResource BaseButton}" Padding="0" FontSize="16" ToolTip="最小化" Click="btnMinimize_Click"/>
+                                <Button x:Name="btnMaxRestore" Content="□" Width="36" Height="28" Style="{StaticResource BaseButton}" Padding="0" FontSize="14" ToolTip="最大化/还原" Click="btnMaxRestore_Click" Margin="6,0,0,0"/>
+                                <Button x:Name="btnClose" Content="×" Width="36" Height="28" Style="{StaticResource AccentButtonRed}" Padding="0" FontSize="16" ToolTip="关闭" Click="btnClose_Click" Margin="6,0,0,0"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Margin="8,0,0,0">
+                                <Button x:Name="btnCapture" IsEnabled="False"  Content="保存截图" Style="{StaticResource AccentButtonBlue}" Width="110" Margin="80,0" Click="btnCapture_Click"/>
+                                <TextBox x:Name="txtIpAddress"
+                                         Style="{StaticResource IPTextBox}"
+                                         Width="170"
+                                         Margin="8,0"
+                                         TextAlignment="Center"
+                                         ToolTip="IP 地址，如 192.168.0.0"
+                                         Text="192.168.0.0"
+                                         TextChanged="txtIpAddress_TextChanged"/>
+                                <TextBox x:Name="txtPort"
+                                         Style="{StaticResource PortTextBox}"
+                                         Width="100"
+                                         Margin="0,0,8,0"
+                                         TextAlignment="Center"
+                                         ToolTip="端口，如 6000"
+                                         Text="6000"
+                                         TextChanged="txtPort_TextChanged"/>
+                                <Button x:Name="btnSettings" Content="设置" Style="{StaticResource AccentButtonRed}" Width="110" Margin="100,0" Click="btnSettings_Click"/>
+                            </StackPanel>
+                        </DockPanel>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Rectangle Grid.Column="0" Fill="{StaticResource JoyBlue}"/>
+                            <Rectangle Grid.Column="1" Fill="{StaticResource JoyRed}"/>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Row="1" Margin="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" CornerRadius="18" Padding="16" BorderThickness="2" Background="{StaticResource BrushPanel}" BorderBrush="{StaticResource JoyBlue}" Effect="{StaticResource SoftShadow}">
+                        <Grid>
+                            <Rectangle RadiusX="16" RadiusY="16" Fill="{StaticResource LeftTint}"/>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        Margin="0,8,0,0">
+
+
+                                <Button x:Name="btnZL"
+                                        Content="ZL"
+                                        Style="{StaticResource ShoulderButton}"
+                                        BorderBrush="{StaticResource JoyBlue}"
+                                        Width="80" Height="30" FontSize="14"
+                                        ToolTip="左前肩键 ZL"
+                                        Margin="0,0,10,0"
+                                        PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                        PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
+
+                                <Button x:Name="btnL"
+                                        Content="L"
+                                        Style="{StaticResource ShoulderButton}"
+                                        BorderBrush="{StaticResource JoyBlue}"
+                                        Width="80" Height="30" FontSize="14"
+                                        ToolTip="左肩键 L"
+                                        Margin="0,0,10,0"
+                                        PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                        PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
+
+                                <Button x:Name="btnMinus"
+                                        Content="–"
+                                        Style="{StaticResource AccentButtonBlue}"
+                                        Width="40" Height="30" FontSize="16"
+                                        ToolTip="Minus 键"
+                                        PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                        PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
+                            </StackPanel>
+
+                            <Grid x:Name="LeftStickRoot"
+                                      Width="140" Height="140"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Top" Margin="0,56,0,0">
+
+                                <Grid>
+                                    <Ellipse Stroke="{StaticResource JoyBlue}" StrokeThickness="3" Effect="{StaticResource SoftShadow}">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush GradientOrigin="0.35,0.35" Center="0.5,0.5" RadiusX="0.7" RadiusY="0.7">
+                                                <GradientStop Color="#1E2638" Offset="0"/>
+                                                <GradientStop Color="#101520" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+
+                                    <Ellipse Margin="10">
+                                        <Ellipse.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#111827" Offset="0"/>
+                                                <GradientStop Color="#0A0F1A" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+
+                                    <Ellipse Margin="10" Stroke="#40FFFFFF" StrokeThickness="1">
+                                        <Ellipse.OpacityMask>
+                                            <RadialGradientBrush GradientOrigin="0.3,0.2" Center="0.5,0.5" RadiusX="0.6" RadiusY="0.6">
+                                                <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#00FFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.OpacityMask>
+                                    </Ellipse>
+
+                                    <Ellipse Margin="42" Stroke="{StaticResource BrushStroke}" StrokeDashArray="2 2" Opacity="0.5"/>
+                                </Grid>
+
+                                <Thumb x:Name="LeftStickThumb"
+                                           Width="64" Height="64"
+                                           Cursor="Hand"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Loaded="LeftStickThumb_Loaded"
+                                           DragStarted="LeftStickThumb_DragStarted"
+                                           DragDelta="LeftStickThumb_DragDelta"
+                                           DragCompleted="LeftStickThumb_DragCompleted">
+                                    <Thumb.RenderTransform>
+                                        <TranslateTransform x:Name="LeftStickKnobTT"/>
+                                    </Thumb.RenderTransform>
+
+                                    <Thumb.Template>
+                                        <ControlTemplate TargetType="Thumb">
+                                            <Grid Background="Transparent">
+                                                <Ellipse Width="64" Height="64" Opacity="0.35">
+                                                    <Ellipse.Fill>
+                                                        <RadialGradientBrush Center="0.5,0.6" RadiusX="0.7" RadiusY="0.7">
+                                                            <GradientStop Color="#000000" Offset="0"/>
+                                                            <GradientStop Color="#00000000" Offset="1"/>
+                                                        </RadialGradientBrush>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+
+                                                <Ellipse Stroke="{StaticResource JoyBlue}" StrokeThickness="2">
+                                                    <Ellipse.Fill>
+                                                        <RadialGradientBrush GradientOrigin="0.3,0.25" Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
+                                                            <GradientStop Color="#273047" Offset="0"/>
+                                                            <GradientStop Color="#1B2234" Offset="0.6"/>
+                                                            <GradientStop Color="#121827" Offset="1"/>
+                                                        </RadialGradientBrush>
+                                                    </Ellipse.Fill>
+                                                    <Ellipse.Effect>
+                                                        <DropShadowEffect BlurRadius="12" ShadowDepth="2" Color="#000000" Opacity="0.5"/>
+                                                    </Ellipse.Effect>
+                                                </Ellipse>
+
+                                                <Ellipse Margin="8" Opacity="0.5">
+                                                    <Ellipse.Fill>
+                                                        <RadialGradientBrush GradientOrigin="0.25,0.2" Center="0.3,0.25" RadiusX="0.5" RadiusY="0.5">
+                                                            <GradientStop Color="#55FFFFFF" Offset="0"/>
+                                                            <GradientStop Color="#00FFFFFF" Offset="1"/>
+                                                        </RadialGradientBrush>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+
+                                                <Ellipse Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7">
+                                                    <Ellipse.Fill>
+                                                        <RadialGradientBrush GradientOrigin="0.35,0.3" Center="0.5,0.5" RadiusX="0.7" RadiusY="0.7">
+                                                            <GradientStop Color="#2B334B" Offset="0"/>
+                                                            <GradientStop Color="#111827" Offset="1"/>
+                                                        </RadialGradientBrush>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Thumb.Template>
+                                </Thumb>
+                            </Grid>
+                            <Grid Width="150" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,233,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button x:Name="btnUp" Grid.Row="0" Grid.Column="1" Content="↑"
+                                        Style="{StaticResource RoundButton}" BorderBrush="{StaticResource JoyBlue}"
+                                        Width="48" Height="48" FontSize="14"
+                                        PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                        PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
+                                <Button x:Name="btnLeft" Grid.Row="1" Grid.Column="0" Content="←"
+                                        Style="{StaticResource RoundButton}" BorderBrush="{StaticResource JoyBlue}"
+                                        Width="48" Height="48" FontSize="14"
+                                        PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                        PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
+                                <Button x:Name="btnRight" Grid.Row="1" Grid.Column="2" Content="→"
+                                        Style="{StaticResource RoundButton}" BorderBrush="{StaticResource JoyBlue}"
+                                        Width="48" Height="48" FontSize="14"
+                                        PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                        PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
+                                <Button x:Name="btnDown" Grid.Row="2" Grid.Column="1" Content="↓"
+                                        Style="{StaticResource RoundButton}" BorderBrush="{StaticResource JoyBlue}"
+                                        Width="48" Height="48" FontSize="14"
+                                        PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                        PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
+
+                                <Border Grid.Row="1" Grid.Column="1" Background="Transparent" CornerRadius="8" Opacity="0.25"/>
+                            </Grid>
+
+                            <Button x:Name="btnCaptureLeft"
+                                    Width="40"
+                                    Height="40"
+                                    ToolTip="Capture 截图键"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Margin="0,355,16,0"
+                                    BorderBrush="{StaticResource JoyBlue}"
+                                    Background="{StaticResource BrushCard}"
+                                    Foreground="{StaticResource JoyBlue}"
+                                    FontSize="22"
+                                    Style="{StaticResource RoundButton}"
+                                    Content="📸"
+                                    PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                    PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp">
+                                <Button.Effect>
+                                    <DropShadowEffect BlurRadius="8" ShadowDepth="2" Color="#000000" Opacity="0.5"/>
+                                </Button.Effect>
+                            </Button>
+
+
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="1" Background="{StaticResource BrushPanel}" CornerRadius="18" Padding="20" BorderBrush="{StaticResource BrushStroke}" BorderThickness="1" Effect="{StaticResource SoftShadow}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Viewbox Stretch="Uniform" Grid.Row="0">
+                                <Grid Width="1600" Height="900" Background="{StaticResource ScreenBackground}">
+                                    <Border CornerRadius="16" Width="1600" Height="900" BorderBrush="#293247" BorderThickness="1">
+                                        <Grid>
+                                            <Image x:Name="imgSwitchDisplay" Width="1600" Height="900" Stretch="Uniform" Margin="0,-2,-2,0"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Viewbox>
+
+                            <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,16,0,0">
+                                <TextBlock x:Name ="txtLog" Text="等待连接..."
+                                           FontSize="16"
+                                           TextAlignment="Center"
+                                           Foreground="{StaticResource BrushSubtle}"
+                                           Margin="0,0,0,0"/>
+
+
+                            </StackPanel>
+
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="2" CornerRadius="18" Padding="16" BorderThickness="2" Background="{StaticResource BrushPanel}" BorderBrush="{StaticResource JoyRed}" Effect="{StaticResource SoftShadow}">
+                        <Grid>
+                            <Rectangle RadiusX="16" RadiusY="16" Fill="{StaticResource RightTint}"/>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        Margin="0,8,0,0">
+
+                                <Button x:Name="btnPlus"
+                                        Content="+"
+                                        Style="{StaticResource AccentButtonRed}"
+                                        Width="40" Height="30" FontSize="16"
+                                        ToolTip="Plus 键"
+                                        Margin="0,0,10,0"/>
+
+                                <Button x:Name="btnR"
+                                        Content="R"
+                                        Style="{StaticResource ShoulderButton}"
+                                        BorderBrush="{StaticResource JoyRed}"
+                                        Width="80" Height="30" FontSize="14"
+                                        ToolTip="右肩键 R"
+                                        Margin="0,0,10,0"/>
+
+                                <Button x:Name="btnZR"
+                                        Content="ZR"
+                                        Style="{StaticResource ShoulderButton}"
+                                        BorderBrush="{StaticResource JoyRed}"
+                                        Width="80" Height="30" FontSize="14"
+                                        ToolTip="右前肩键 ZR"/>
+                            </StackPanel>
+
+                            <Grid x:Name="RightStickRoot"
+                                  Width="140" Height="140"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top" Margin="58,234,0,0">
+
+                                <Grid>
+                                    <Ellipse Stroke="{StaticResource JoyRed}" StrokeThickness="3" Effect="{StaticResource SoftShadow}">
+                                        <Ellipse.Fill>
+                                            <RadialGradientBrush GradientOrigin="0.35,0.35" Center="0.5,0.5" RadiusX="0.7" RadiusY="0.7">
+                                                <GradientStop Color="#1E2638" Offset="0"/>
+                                                <GradientStop Color="#101520" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+
+                                    <Ellipse Margin="10">
+                                        <Ellipse.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#111827" Offset="0"/>
+                                                <GradientStop Color="#0A0F1A" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+
+                                    <Ellipse Margin="10" Stroke="#40FFFFFF" StrokeThickness="1">
+                                        <Ellipse.OpacityMask>
+                                            <RadialGradientBrush GradientOrigin="0.3,0.2" Center="0.5,0.5" RadiusX="0.6" RadiusY="0.6">
+                                                <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                                                <GradientStop Color="#00FFFFFF" Offset="1"/>
+                                            </RadialGradientBrush>
+                                        </Ellipse.OpacityMask>
+                                    </Ellipse>
+
+                                    <Ellipse Margin="42" Stroke="{StaticResource BrushStroke}" StrokeDashArray="2 2" Opacity="0.5"/>
+                                </Grid>
+
+                                <Thumb x:Name="RightStickThumb"
+                                           Width="64" Height="64"
+                                           Cursor="Hand"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Loaded="RightStickThumb_Loaded"
+                                           DragStarted="RightStickThumb_DragStarted"
+                                           DragDelta="RightStickThumb_DragDelta"
+                                           DragCompleted="RightStickThumb_DragCompleted">
+                                    <Thumb.RenderTransform>
+                                        <TranslateTransform x:Name="RightStickKnobTT"/>
+                                    </Thumb.RenderTransform>
+
+                                    <Thumb.Template>
+                                        <ControlTemplate TargetType="Thumb">
+                                            <Grid Background="Transparent">
+                                                <Ellipse Width="64" Height="64" Opacity="0.35">
+                                                    <Ellipse.Fill>
+                                                        <RadialGradientBrush Center="0.5,0.6" RadiusX="0.7" RadiusY="0.7">
+                                                            <GradientStop Color="#000000" Offset="0"/>
+                                                            <GradientStop Color="#00000000" Offset="1"/>
+                                                        </RadialGradientBrush>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+
+                                                <Ellipse Stroke="{StaticResource JoyRed}" StrokeThickness="2">
+                                                    <Ellipse.Fill>
+                                                        <RadialGradientBrush GradientOrigin="0.3,0.25" Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
+                                                            <GradientStop Color="#273047" Offset="0"/>
+                                                            <GradientStop Color="#1B2234" Offset="0.6"/>
+                                                            <GradientStop Color="#121827" Offset="1"/>
+                                                        </RadialGradientBrush>
+                                                    </Ellipse.Fill>
+                                                    <Ellipse.Effect>
+                                                        <DropShadowEffect BlurRadius="12" ShadowDepth="2" Color="#000000" Opacity="0.5"/>
+                                                    </Ellipse.Effect>
+                                                </Ellipse>
+
+                                                <Ellipse Margin="8" Opacity="0.5">
+                                                    <Ellipse.Fill>
+                                                        <RadialGradientBrush GradientOrigin="0.25,0.2" Center="0.3,0.25" RadiusX="0.5" RadiusY="0.5">
+                                                            <GradientStop Color="#55FFFFFF" Offset="0"/>
+                                                            <GradientStop Color="#00FFFFFF" Offset="1"/>
+                                                        </RadialGradientBrush>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+
+                                                <Ellipse Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7">
+                                                    <Ellipse.Fill>
+                                                        <RadialGradientBrush GradientOrigin="0.35,0.3" Center="0.5,0.5" RadiusX="0.7" RadiusY="0.7">
+                                                            <GradientStop Color="#2B334B" Offset="0"/>
+                                                            <GradientStop Color="#111827" Offset="1"/>
+                                                        </RadialGradientBrush>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Thumb.Template>
+                                </Thumb>
+                            </Grid>
+
+                            <Grid Width="150" Height="150"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top"
+                                  Margin="52,53,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button x:Name="btnX" Grid.Row="0" Grid.Column="1" Content="X"
+                                    Style="{StaticResource RoundButton}" BorderBrush="{StaticResource JoyRed}"
+                                    Width="48" Height="48" FontSize="14"
+                                    PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                    PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
+                                <Button x:Name="btnY" Grid.Row="1" Grid.Column="0" Content="Y"
+                                    Style="{StaticResource RoundButton}" BorderBrush="{StaticResource JoyRed}"
+                                    Width="48" Height="48" FontSize="14"
+                                    PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                    PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
+                                <Button x:Name="btnA" Grid.Row="1" Grid.Column="2" Content="A"
+                                    Style="{StaticResource RoundButton}" BorderBrush="{StaticResource JoyRed}"
+                                    Width="48" Height="48" FontSize="14"
+                                    PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                    PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
+                                <Button x:Name="btnB" Grid.Row="2" Grid.Column="1" Content="B"
+                                    Style="{StaticResource RoundButton}" BorderBrush="{StaticResource JoyRed}"
+                                    Width="48" Height="48" FontSize="14"
+                                    PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                    PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
+
+                                <Border Grid.Row="1" Grid.Column="1" Background="Transparent" CornerRadius="8" Opacity="0.25"/>
+                            </Grid>
+                            <Button x:Name="btnHome"
+                                    Width="40"
+                                    Height="40"
+                                    ToolTip="Home 键"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Margin="16,355,0,0"
+                                    BorderBrush="{StaticResource JoyRed}"
+                                    Background="{StaticResource BrushCard}"
+                                    Foreground="{StaticResource JoyRed}"
+                                    FontSize="22"
+                                    Style="{StaticResource RoundButton}"
+                                    Content="🏠"
+                                    PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                    PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp">
+                                <Button.Effect>
+                                    <DropShadowEffect BlurRadius="8" ShadowDepth="2" Color="#000000" Opacity="0.5"/>
+                                </Button.Effect>
+                            </Button>
+
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <Border Grid.Row="2" Background="{StaticResource BrushPanel}"
+        BorderBrush="{StaticResource BrushStroke}"
+        BorderThickness="1,1,1,0"
+        Padding="12"
+        CornerRadius="0,0,20,20"
+        Effect="{StaticResource SoftShadow}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="2"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center">
+                                <Button x:Name="btnStartStream"
+                                        Style="{StaticResource AccentButtonBlue}"
+                                        Content="开始连接"
+                                        Margin="0,0,8,0"
+                                        Padding="20,10"
+                                        Height="36"
+                                        MinWidth="120"
+                                        FontSize="16" Click="btnStartStream_Click" />
+
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="连接状态:"
+                                       Foreground="{StaticResource BrushSubtle}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,8,0"/>
+                                <Ellipse Name="ellipseStatus" Width="10"
+                                 Height="10"
+                                 Fill="#DA4453"
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,6,0"/>
+                                <TextBlock x:Name="txtStatus"
+                                       Text="未连接"
+                                       Foreground="{StaticResource BrushSubtle}"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+
+                                <Button x:Name="btnStopStream"
+                                        Style="{StaticResource AccentButtonRed}"
+                                        Content="停止连接"
+                                        IsEnabled="False"
+                                        Padding="20,10"
+                                        MinWidth="120"
+                                        Height="36"
+                                        FontSize="16" Click="btnStopStream_Click" />
+
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="0,4,0,-4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Rectangle Grid.Column="0" Fill="{StaticResource JoyBlue}" Margin="0,4,0,-4"/>
+                            <Rectangle Grid.Column="1" Fill="{StaticResource JoyRed}" Margin="0,4,0,-4"/>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+            </Grid>
+        </Border>
+    </Grid>
+
+</Window>
