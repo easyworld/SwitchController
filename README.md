@@ -44,7 +44,7 @@
 ### 1️⃣ 准备环境
 - 一台已安装 **Sys-BotBase** 的 Nintendo Switch；
 - 一台与 Switch 在同一网络下的电脑；
-- 安装 [.NET 6.0+ Runtime](https://dotnet.microsoft.com/download/dotnet)；
+- 安装 [.NET 9.0+ Runtime](https://dotnet.microsoft.com/download/dotnet)；
 - 下载或编译本项目的可执行文件。
 
 ### 2️⃣ 启动 Sys-BotBase
@@ -85,14 +85,6 @@
 
 ---
 
-## 🧑‍💻 开发者信息
-**Author:** [ZiyuKing](https://github.com/ZiYuKing)  
-**Project:** SwitchController  
-**Base:** [Sys-BotBase](https://github.com/olliz0r/sys-botbase)  
-**License:** MIT License  
-
----
-
 ## ⭐ 支持本项目
 如果这个项目对你有帮助，欢迎：
 - 点亮 Star ⭐ 支持；
@@ -102,4 +94,30 @@
 ---
 
 > “让控制与自由结合，像真正的手柄一样体验 Switch。”
+
+
+## 🪪 License / 许可声明
+
+本项目 **SwitchController** 基于 [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html) 开源发布。
+
+你可以：
+- ✅ 自由使用、修改、分发本项目的代码；
+- ✅ 在遵守 GPLv3 的前提下，将其用于研究、教学、或其他非商业/商业用途；
+- ⚠️ 但必须在发布衍生作品时 **保持相同许可证（GPLv3）** 并保留版权与声明。
+
+---
+
+### 🔗 包含的上游项目
+本项目基于以下开源项目开发：
+
+| 依赖项目 | 作者 | 协议 |
+|-----------|------|------|
+| [Sys-BotBase](https://github.com/olliz0r/sys-botbase) | olliz0r | GPL-3.0 |
+| [SysBot.Base](https://github.com/kwsch/SysBot.NET) | kwsch | MIT |
+| SwitchController | ZiYuKing | GPL-3.0 |
+
+由于本项目直接依赖并与 Sys-BotBase (GPLv3) 链接，  
+因此本项目整体遵循 GPLv3 协议。
+
+📄 **完整许可证文本见：[LICENSE](LICENSE)**
 
