@@ -55,6 +55,7 @@ public partial class MainWindow : Window
     private long _rightLastSendMs = 0;
     private double _rightMaxDrag = 0;
 
+    private byte[] _screenGrab = [];
     public MainWindow()
     {
         InitializeComponent();
@@ -572,6 +573,7 @@ public partial class MainWindow : Window
                 {
                     await Application.Current.Dispatcher.InvokeAsync(() =>
                     {
+                        _screenGrab = pic;
                         using var ms = new MemoryStream(pic);
                         var bitmap = new BitmapImage();
                         bitmap.BeginInit();
@@ -629,6 +631,7 @@ public partial class MainWindow : Window
                 {
                     await Application.Current.Dispatcher.InvokeAsync(() =>
                     {
+                        _screenGrab = pic;
                         using var ms = new MemoryStream(pic);
                         var bitmap = new BitmapImage();
                         bitmap.BeginInit();
@@ -884,15 +887,18 @@ public partial class MainWindow : Window
 
             string filePath = saveFileDialog.FileName;
 
-            var data = await SwitchConnection.Screengrab(SOUR.Token).ConfigureAwait(false) ?? Array.Empty<byte>();
+            _screenGrab = _screenGrab.Length == 0
+                        ? await SwitchConnection.Screengrab(SOUR.Token).ConfigureAwait(false) ?? []
+                        : _screenGrab;
 
-            if (data.Length == 0)
+            if (_screenGrab.Length == 0)
             {
                 Dispatcher.Invoke(() => MessageBox.Show("截图数据为空，保存失败。"));
                 return;
             }
 
-            await File.WriteAllBytesAsync(filePath, data);
+
+            await File.WriteAllBytesAsync(filePath, _screenGrab);
 
             Dispatcher.Invoke(() =>
             {

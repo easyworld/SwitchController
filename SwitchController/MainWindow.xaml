@@ -637,7 +637,9 @@
                                         Style="{StaticResource AccentButtonRed}"
                                         Width="40" Height="30" FontSize="16"
                                         ToolTip="Plus 键"
-                                        Margin="0,0,10,0"/>
+                                        Margin="0,0,10,0"
+                                        PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                        PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
 
                                 <Button x:Name="btnR"
                                         Content="R"
@@ -645,14 +647,18 @@
                                         BorderBrush="{StaticResource JoyRed}"
                                         Width="80" Height="30" FontSize="14"
                                         ToolTip="右肩键 R"
-                                        Margin="0,0,10,0"/>
+                                        Margin="0,0,10,0"
+                                        PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                        PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
 
                                 <Button x:Name="btnZR"
                                         Content="ZR"
                                         Style="{StaticResource ShoulderButton}"
                                         BorderBrush="{StaticResource JoyRed}"
                                         Width="80" Height="30" FontSize="14"
-                                        ToolTip="右前肩键 ZR"/>
+                                        ToolTip="右前肩键 ZR"
+                                        PreviewMouseLeftButtonDown="Btn_PreviewMouseLeftButtonDown"
+                                        PreviewMouseLeftButtonUp="Btn_PreviewMouseLeftButtonUp"/>
                             </StackPanel>
 
                             <Grid x:Name="RightStickRoot"
