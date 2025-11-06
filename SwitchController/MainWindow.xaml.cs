@@ -983,6 +983,7 @@ public partial class MainWindow : Window
             VlcView.Visibility = Visibility.Visible;
             imgSwitchDisplay.Visibility = Visibility.Collapsed;
             btnRtspRescue.Content = "RTSP救援";
+            StartRtspStream($"rtsp://{txtIpAddress.Text}:{Settings.Default.RtspPort}/");
         }
     }
 }
