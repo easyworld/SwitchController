@@ -79,12 +79,15 @@ public partial class MainWindow : Window
     {
         var ip = Settings.Default.SwitchIP;
         var port = Settings.Default.SwitchPort;
+        bool autoScreenOff = Settings.Default.AutoScreenOff;
 
         if (!string.IsNullOrWhiteSpace(ip))
             txtIpAddress.Text = ip;
 
         if (port > 0)
             txtPort.Text = port.ToString();
+
+        btnScreenSwitch.Content = autoScreenOff ? "打开屏幕" : "关闭屏幕";
     }
 
     private void SaveSettings()
@@ -388,6 +391,7 @@ public partial class MainWindow : Window
         CON = SwitchConnection;
         SOUR = Source;
         btnStopStream.IsEnabled = true;
+        btnScreenSwitch.IsEnabled = true;
         btnCapture.IsEnabled = true;
         btnStartStream.IsEnabled = false;
         await Connect();
@@ -462,6 +466,7 @@ public partial class MainWindow : Window
                     ? $"Switch | 已连接成功 | {id}"
                     : "Switch | 已连接成功 | 未启动游戏";
             });
+            await SetScreen(ScreenState.Off).ConfigureAwait(false);
             // 操作预览
             StartScreenStream();
             // 持续预览
@@ -797,6 +802,17 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
+    /// 设置屏幕状态
+    /// </summary>
+    /// <param name="state"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task SetScreen(ScreenState state)
+    {
+        await SwitchConnection.SendAsync(SwitchCommand.SetScreen(state), SOUR.Token).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// 按下 Switch 按钮
     /// </summary>
     /// <param name="sender"></param>
@@ -900,6 +916,7 @@ public partial class MainWindow : Window
     private void btnStopStream_Click(object sender, RoutedEventArgs e)
     {
         btnStopStream.IsEnabled = false;
+        btnScreenSwitch.IsEnabled = false;
         btnCapture.IsEnabled = false;
         btnStartStream.IsEnabled = true;
         if (SwitchConnection.Connected)
@@ -984,6 +1001,23 @@ public partial class MainWindow : Window
             imgSwitchDisplay.Visibility = Visibility.Collapsed;
             btnRtspRescue.Content = "RTSP救援";
             StartRtspStream($"rtsp://{txtIpAddress.Text}:{Settings.Default.RtspPort}/");
+        }
+    }
+
+    private async void btnScreenSwitch_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button btn)
+            return;
+        switch (btn.Content)
+        {
+            case "打开屏幕":
+                await SetScreen(ScreenState.On).ConfigureAwait(false);
+                btn.Content = "关闭屏幕";
+                break;
+            case "关闭屏幕":
+                await SetScreen(ScreenState.Off).ConfigureAwait(false);
+                btn.Content = "打开屏幕";
+                break;
         }
     }
 }

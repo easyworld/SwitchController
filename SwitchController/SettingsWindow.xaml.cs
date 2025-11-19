@@ -35,6 +35,8 @@ public partial class SettingsWindow : Window
 
         // 主题：0=深色  1=浅色  2=传说Z-A限定
         cbTheme.SelectedIndex = s.ThemeName == "Dark" ? 0 : s.ThemeName == "Light" ? 1 : s.ThemeName == "ZA" ? 2 : 2;
+        // 息屏
+        chkAutoScreenOff.IsChecked = s.AutoScreenOff;
 
     }
 
@@ -68,6 +70,7 @@ public partial class SettingsWindow : Window
         int deadZone = ParsePositive(tbDeadZone.Text, 8);
         int sendInterval = ParsePositive(tbSendInterval.Text, 15);
         string newTheme = (cbTheme.SelectedIndex == 2) ? "ZA" : (cbTheme.SelectedIndex == 1) ? "Light" : "Dark";
+        bool autoScreenOff = chkAutoScreenOff.IsChecked ?? false;
 
         // 旧值
         var s = Properties.Settings.Default;
@@ -80,6 +83,7 @@ public partial class SettingsWindow : Window
         int oldDeadZone = s.DeadZonePx;
         int oldInterval = s.SendIntervalMs;
         string oldTheme = s.ThemeName ?? "Dark";
+        bool oldAutoScreenOff = s.AutoScreenOff;
 
         // 比对是否有变化
         bool ipChanged = !string.Equals(oldIP, ip, StringComparison.OrdinalIgnoreCase);
@@ -91,9 +95,10 @@ public partial class SettingsWindow : Window
         bool deadZoneChanged = oldDeadZone != deadZone;
         bool intervalChanged = oldInterval != sendInterval;
         bool themeChanged = !string.Equals(oldTheme, newTheme, StringComparison.OrdinalIgnoreCase);
+        bool autoScreenOffChanged = oldAutoScreenOff != autoScreenOff;
 
         bool anyChanged = ipChanged || portChanged || modeChanged || cacheChanged || rtspPortChanged ||
-                          previewChanged || deadZoneChanged || intervalChanged || themeChanged;
+                          previewChanged || deadZoneChanged || intervalChanged || themeChanged || autoScreenOffChanged;
 
         // 没变化就直接返回
         if (!anyChanged)
@@ -109,6 +114,7 @@ public partial class SettingsWindow : Window
         s.DeadZonePx = deadZone;
         s.SendIntervalMs = sendInterval;
         s.ThemeName = newTheme;
+        s.AutoScreenOff = autoScreenOff;
         s.Save();
 
         if (themeChanged || modeChanged)
@@ -172,6 +178,7 @@ public partial class SettingsWindow : Window
         tbDeadZone.Text = "8";
         tbSendInterval.Text = "15";
         cbTheme.SelectedIndex = 0;
+        chkAutoScreenOff.IsChecked = false;
         RestartApp();
     }
 
