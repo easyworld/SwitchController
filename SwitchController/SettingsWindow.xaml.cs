@@ -23,6 +23,7 @@ public partial class SettingsWindow : Window
         tbIp.Text = s.SwitchIP ?? "192.168.0.0";
         tbPort.Text = s.SwitchPort > 0 ? s.SwitchPort.ToString() : "6000";
         rtspPort.Text = s.RtspPort > 0 ? s.RtspPort.ToString() : "6666";
+        cmbProtocol.SelectedIndex = s.SwitchProtocol; // 0=WiFi  1=USB
 
         // 拉流模式：0=持续拉流  1=操作预览  2=RTSP播放  3=关闭预览
         cbStreamMode.SelectedIndex = Math.Clamp(s.StreamMode, 0, 3);
@@ -45,6 +46,7 @@ public partial class SettingsWindow : Window
         var ip = tbIp.Text.Trim();
         var port = tbPort.Text.Trim();
         var rtspPort = this.rtspPort.Text.Trim();
+        var protocol = (byte)cmbProtocol.SelectedIndex;
 
         // 简单校验
         if (!Regex.IsMatch(ip, @"^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$"))
@@ -62,6 +64,11 @@ public partial class SettingsWindow : Window
             MessageBox.Show("RTSP端口必须是 1~65535 的整数。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
             return false;
         }
+        if (protocol < 0 || protocol > 1)
+        {
+            MessageBox.Show("请选择正确的连接协议。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return false;
+        }
 
         // 新值
         int mode = cbStreamMode.SelectedIndex; 
@@ -76,6 +83,7 @@ public partial class SettingsWindow : Window
         var s = Properties.Settings.Default;
         string oldIP = s.SwitchIP ?? "";
         int oldPort = s.SwitchPort;
+        var oldProtocol = s.SwitchProtocol;
         int oldRtspPort = s.RtspPort;
         int oldMode = s.StreamMode;
         int oldCache = s.RtspCache;
@@ -88,6 +96,7 @@ public partial class SettingsWindow : Window
         // 比对是否有变化
         bool ipChanged = !string.Equals(oldIP, ip, StringComparison.OrdinalIgnoreCase);
         bool portChanged = oldPort != p;
+        bool protocolChanged = oldProtocol != protocol;
         bool rtspPortChanged = oldRtspPort != rp;
         bool modeChanged = oldMode != mode;
         bool cacheChanged = oldCache != cache;
@@ -97,7 +106,7 @@ public partial class SettingsWindow : Window
         bool themeChanged = !string.Equals(oldTheme, newTheme, StringComparison.OrdinalIgnoreCase);
         bool autoScreenOffChanged = oldAutoScreenOff != autoScreenOff;
 
-        bool anyChanged = ipChanged || portChanged || modeChanged || cacheChanged || rtspPortChanged ||
+        bool anyChanged = ipChanged || portChanged || protocolChanged || modeChanged || cacheChanged || rtspPortChanged ||
                           previewChanged || deadZoneChanged || intervalChanged || themeChanged || autoScreenOffChanged;
 
         // 没变化就直接返回
@@ -107,6 +116,7 @@ public partial class SettingsWindow : Window
         // 写入新值
         s.SwitchIP = ip;
         s.SwitchPort = p;
+        s.SwitchProtocol = protocol;
         s.RtspPort = rp;
         s.StreamMode = mode;
         s.RtspCache = cache;
@@ -171,6 +181,7 @@ public partial class SettingsWindow : Window
     {
         tbIp.Text = "192.168.0.0";
         tbPort.Text = "6000";
+        cmbProtocol.SelectedIndex = 0;
         rtspPort.Text = "6666";
         cbStreamMode.SelectedIndex = 1;
         tbCache.Text = "150";

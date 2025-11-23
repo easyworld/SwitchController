@@ -316,6 +316,110 @@
             <Style x:Key="AccentButtonRed" TargetType="Button" BasedOn="{StaticResource BaseButton}">
                 <Setter Property="BorderBrush" Value="{DynamicResource JoyRed}"/>
             </Style>
+
+            <!-- ComboBox style matching PortTextBox visuals -->
+            <Style x:Key="PortComboBox" TargetType="ComboBox">
+                <Setter Property="Foreground" Value="{DynamicResource BrushText}"/>
+                <Setter Property="Background" Value="{DynamicResource BrushCard}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource BrushStroke}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="12,6"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <!-- Ensure dropdown items are centered -->
+                <Setter Property="ItemContainerStyle">
+                    <Setter.Value>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="Foreground" Value="{DynamicResource BrushText}"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ComboBox">
+                            <Border x:Name="Bd"
+                      CornerRadius="12"
+                      Background="{TemplateBinding Background}"
+                      BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="{TemplateBinding BorderThickness}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="28"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <ToggleButton x:Name="ToggleButton"
+                          Grid.ColumnSpan="2"
+                          Focusable="False"
+                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                          Background="Transparent"
+                          BorderThickness="0"
+                          HorizontalContentAlignment="Stretch"
+                          VerticalContentAlignment="Center">
+ <ToggleButton.Template>
+ <ControlTemplate TargetType="ToggleButton">
+ <!-- Minimal template: no mouseover/pressed visual states -->
+ <Border Background="Transparent">
+ <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+ </Border>
+ </ControlTemplate>
+ </ToggleButton.Template>
+
+ <Grid>
+ <Grid.ColumnDefinitions>
+ <ColumnDefinition/>
+ <ColumnDefinition Width="28"/>
+ </Grid.ColumnDefinitions>
+
+ <TextBlock x:Name="ContentSite"
+                          IsHitTestVisible="False"
+                          Text="{TemplateBinding SelectionBoxItem}"
+                          Margin="4,0"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          Foreground="{TemplateBinding Foreground}"/>
+
+                                            <Path Grid.Column="1"
+ Data="M0,0 L8,0 L4,6 Z"
+ Fill="{TemplateBinding Foreground}"
+ Stretch="Uniform"
+ Width="8" Height="6"
+ HorizontalAlignment="Center"
+ VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </ToggleButton>
+
+                                    <Popup x:Name="PART_Popup"
+ PlacementTarget="{Binding ElementName=Bd}"
+ IsOpen="{TemplateBinding IsDropDownOpen}"
+ AllowsTransparency="True"
+ Focusable="False"
+ PopupAnimation="Fade">
+ <Border Background="{DynamicResource BrushCard}" BorderBrush="{DynamicResource BrushStroke}" BorderThickness="1" CornerRadius="8" Padding="4">
+ <ScrollViewer CanContentScroll="True">
+ <ItemsPresenter HorizontalAlignment="Center"/>
+ </ScrollViewer>
+ </Border>
+ </Popup>
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="Bd" Property="Opacity" Value="0.45"/>
+                                </Trigger>
+                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                    <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource JoyRed}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -378,6 +482,10 @@
                                          ToolTip="端口，如 6000"
                                          Text="6000"
                                          TextChanged="txtPort_TextChanged"/>
+                                <ComboBox x:Name="cmbProtocol" Style="{StaticResource PortComboBox}" Width="100" Margin="0,0,8,0" SelectedIndex="0" SelectionChanged="cmbProtocol_SelectionChanged" ToolTip="连接协议">
+                                    <ComboBoxItem>WiFi</ComboBoxItem>
+                                    <ComboBoxItem>USB</ComboBoxItem>
+                                </ComboBox>
                                 <Button x:Name="btnSettings" Content="设置" Style="{StaticResource AccentButtonRed}" Width="110" Margin="100,0" Click="btnSettings_Click"/>
                             </StackPanel>
                         </DockPanel>

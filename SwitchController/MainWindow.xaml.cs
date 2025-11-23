@@ -22,10 +22,10 @@ namespace SwitchController;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = "192.168.0.0", Port = 6000 };
-    private static SwitchSocketAsync SwitchConnection = new(Config);
+    //private static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = "192.168.0.0", Port = 6000 };
+    private static ISwitchConnectionAsync SwitchConnection { get; set; }
 
-    private static SwitchSocketAsync? CON { get; set; }
+    //private static ISwitchConnectionAsync? CON { get; set; }
     private static CancellationTokenSource? SOUR { get; set; }
     private CancellationTokenSource Source = new();
 
@@ -73,12 +73,17 @@ public partial class MainWindow : Window
         _mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(_libVLC);
         VlcView.MediaPlayer = _mediaPlayer;
 
+        // Ensure protocol combo default is WiFi and ip textbox visible
+        cmbProtocol.SelectedIndex = 0;
+        txtIpAddress.Visibility = Visibility.Visible;
+        SwitchConnection = default!;
     }
 
     private void LoadSettings()
     {
         var ip = Settings.Default.SwitchIP;
         var port = Settings.Default.SwitchPort;
+        var protocol = Settings.Default.SwitchProtocol;
         bool autoScreenOff = Settings.Default.AutoScreenOff;
 
         if (!string.IsNullOrWhiteSpace(ip))
@@ -86,6 +91,7 @@ public partial class MainWindow : Window
 
         if (port > 0)
             txtPort.Text = port.ToString();
+        cmbProtocol.SelectedIndex = protocol == ((byte)SwitchProtocol.USB) ? 1 : 0;
 
         btnScreenSwitch.Content = autoScreenOff ? "打开屏幕" : "关闭屏幕";
     }
@@ -104,6 +110,7 @@ public partial class MainWindow : Window
             return;
         }
         Settings.Default.SwitchIP = txtIpAddress.Text.Trim();
+        Settings.Default.SwitchProtocol = cmbProtocol.SelectedIndex == 1 ? (byte)SwitchProtocol.USB : (byte)SwitchProtocol.WiFi;
         Settings.Default.Save(); // 写入本地
     }
 
@@ -206,6 +213,8 @@ public partial class MainWindow : Window
 
     private void UpdateNormalizedLift()
     {
+        if (_knobTTLift == null) return;
+
         double dx = _knobTTLift.X;
         double dy = _knobTTLift.Y;
         double dist = Math.Sqrt(dx * dx + dy * dy);
@@ -225,6 +234,8 @@ public partial class MainWindow : Window
 
     private void ClampKnob()
     {
+        if (_knobTTLift == null) return;
+
         double nx = _knobTTLift.X;
         double ny = _knobTTLift.Y;
         double len = Math.Sqrt(nx * nx + ny * ny);
@@ -322,6 +333,8 @@ public partial class MainWindow : Window
 
     private void UpdateNormalizedRight()
     {
+        if (_knobTTRight == null) return;
+
         double dx = _knobTTRight.X;
         double dy = _knobTTRight.Y;
         double dist = Math.Sqrt(dx * dx + dy * dy);
@@ -341,6 +354,8 @@ public partial class MainWindow : Window
 
     private void ClampKnobRight()
     {
+        if (_knobTTRight == null) return;
+
         double nx = _knobTTRight.X;
         double ny = _knobTTRight.Y;
         double len = Math.Sqrt(nx * nx + ny * ny);
@@ -387,8 +402,17 @@ public partial class MainWindow : Window
 
     private async void btnStartStream_Click(object sender, RoutedEventArgs e)
     {
-        SwitchConnection = new SwitchSocketAsync(new SwitchConnectionConfig() { Protocol = SwitchProtocol.WiFi, IP = txtIpAddress.Text, Port = int.Parse(txtPort.Text) });
-        CON = SwitchConnection;
+        // Determine protocol from combo box (default WiFi)
+        var protocol = cmbProtocol.SelectedIndex == 1 ? SwitchProtocol.USB : SwitchProtocol.WiFi;
+        
+        SwitchConnection = protocol switch
+        {
+            SwitchProtocol.WiFi =>
+                SwitchConnection = new SwitchSocketAsync(new SwitchConnectionConfig() { Protocol = protocol, IP = txtIpAddress.Text, Port = int.Parse(txtPort.Text) }),
+            SwitchProtocol.USB => new SwitchUSBAsync(int.Parse(txtPort.Text)),
+            _ => throw new NotSupportedException("不支持的连接协议。"),
+        };
+        //CON = SwitchConnection;
         SOUR = Source;
         btnStopStream.IsEnabled = true;
         btnScreenSwitch.IsEnabled = true;
@@ -418,6 +442,15 @@ public partial class MainWindow : Window
             //Settings.Default.SwitchPort = port;
             //Settings.Default.Save();
         }
+    }
+
+    private void cmbProtocol_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      // 使用 sender 来判断选择，避免直接引用可能不存在的字段
+      if (sender is ComboBox cb && cb.SelectedIndex == 1)
+        txtIpAddress.Visibility = Visibility.Collapsed;
+      else
+        txtIpAddress.Visibility = Visibility.Visible;
     }
 
     private async Task Connect()
@@ -721,9 +754,9 @@ public partial class MainWindow : Window
     /// <returns></returns>
     public async Task Click(SwitchButton b)
     {
-        if (CON != null && SwitchConnection.Connected)
+        if (SwitchConnection != null && SwitchConnection.Connected)
         {
-            await CON.SendAsync(SwitchCommand.Click(b), SOUR.Token).ConfigureAwait(false);
+            await SwitchConnection.SendAsync(SwitchCommand.Click(b), SOUR.Token).ConfigureAwait(false);
             TriggerPreview(TimeSpan.FromSeconds(2));
         }
         else
@@ -742,9 +775,9 @@ public partial class MainWindow : Window
     /// <returns></returns>
     public async Task HoldDown(SwitchButton b)
     {
-        if (CON != null && SwitchConnection.Connected)
+        if (SwitchConnection != null && SwitchConnection.Connected)
         {
-            await CON.SendAsync(SwitchCommand.Hold(b), SOUR.Token).ConfigureAwait(false);
+            await SwitchConnection.SendAsync(SwitchCommand.Hold(b), SOUR.Token).ConfigureAwait(false);
             TriggerPreview(TimeSpan.FromSeconds(2));
         }
         else
@@ -763,9 +796,9 @@ public partial class MainWindow : Window
     /// <returns></returns>
     public async Task HoldUp(SwitchButton b)
     {
-        if (CON != null && SwitchConnection.Connected)
+        if (SwitchConnection != null && SwitchConnection.Connected)
         {
-            await CON.SendAsync(SwitchCommand.Release(b), SOUR.Token).ConfigureAwait(false);
+            await SwitchConnection.SendAsync(SwitchCommand.Release(b), SOUR.Token).ConfigureAwait(false);
             TriggerPreview(TimeSpan.FromSeconds(2));
         }
         else
@@ -902,13 +935,15 @@ public partial class MainWindow : Window
 
     private void btnSettings_Click(object sender, RoutedEventArgs e)
     {
-        var win = new SettingsWindow();
-        win.Owner = this;
+        var win = new SettingsWindow
+        {
+            Owner = this
+        };
         if (win.ShowDialog() == true)
         {
             txtIpAddress.Text = Settings.Default.SwitchIP;
             txtPort.Text = Settings.Default.SwitchPort.ToString();
-
+            cmbProtocol.SelectedIndex = Settings.Default.SwitchProtocol == ((byte)SwitchProtocol.USB) ? 1 : 0;
             txtLog.Text = "设置已更新。";
         }
     }
